@@ -332,10 +332,12 @@
                     <div class="result-item">
                         <div class="result-label">Freshness</div>
                         <div class="result-value">${result.freshness}</div>
+                        <div class="result-confidence">${(result.freshness_confidence * 100).toFixed(1)}% confidence</div>
                     </div>
                     <div class="result-item">
-                        <div class="result-label">Mold Level</div>
+                        <div class="result-label">Mold Level / Schimmelgrad</div>
                         <div class="result-value">${result.mold}</div>
+                        <div class="result-confidence">${(result.mold_confidence * 100).toFixed(1)}% confidence</div>
                     </div>
                 `;
                 results.style.display = 'block';

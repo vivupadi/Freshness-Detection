@@ -67,8 +67,9 @@ class FruitClassifier:
             )
             model_bytes = self.blob_client.download_blob().readall()
 
-            # Create temporary file for ONNX model (onnxruntime needs file path)
-            self.model_path = f"/tmp/{blob_name}"
+            # Create temporary file for ONNX model (onnxruntime needs file path) --since azure blob container --> virtual folder an dthen  onnx model.
+            filename = os.path.basename(blob_name)
+            self.model_path = f"/tmp/{filename}"
             with open(self.model_path, 'wb') as f:
                 f.write(model_bytes)
 
@@ -152,7 +153,7 @@ class FruitClassifier:
             elif freshness_prob < 0.40 and confidence_score < 0.25:
                 level = 'Mold / Schimmel'
             else:
-                level = 'Rotten / Verrotten'
+                level = 'Rotten / Verdorben'
 
         return level
 
@@ -185,7 +186,7 @@ class FruitClassifier:
             item_conf = float(fruit_probs[item_idx])
 
             freshness_idx = np.argmax(freshness_probs)
-            freshness_name = 'Fresh' if freshness_idx == 0 else 'Rotten'
+            freshness_name = 'Fresh / Frisch' if freshness_idx == 0 else 'Rotten / Verdorben'
             freshness_conf = float(freshness_probs[freshness_idx])
 
             # Get mold level
@@ -203,7 +204,9 @@ class FruitClassifier:
                 'item': item_name,
                 'item_confidence': item_conf,
                 'freshness': freshness_name,
-                'mold': mold_level
+                'freshness_confidence': freshness_conf,
+                'mold': mold_level,
+                'mold_confidence': mold_confidence
             }
 
         except Exception as e:

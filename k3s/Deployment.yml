@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: inference
-        image: freshness-classifier:latest  # Replace with your registry
+        image: vivupadi/freshness-classifier:latest
         imagePullPolicy: Always
 
         ports:

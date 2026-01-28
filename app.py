@@ -44,8 +44,8 @@ async def startup_event():
     global classifier
     try:
         conn_string = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
-        container = os.getenv("BLOB_CONTAINER", "models")
-        blob = os.getenv("BLOB_NAME", "fruit_classifier.onnx")  # ONNX model file
+        container = os.getenv("BLOB_CONTAINER")
+        blob = os.getenv("BLOB_NAME")  # ONNX model file
         
         if not conn_string:
             print("⚠️ AZURE_STORAGE_CONNECTION_STRING not set")
@@ -54,8 +54,8 @@ async def startup_event():
         classifier = FruitClassifier(conn_string, container, blob)
 
         # ✅ START 24-hour drift monitoring
-        test_container = os.getenv("TEST_CONTAINER", "datasets")
-        test_folder = os.getenv("TEST_FOLDER", "test")
+        test_container = os.getenv("TEST_CONTAINER")
+        test_folder = os.getenv("TEST_FOLDER")
         classifier.start_drift_monitoring(
             test_container=test_container,
             test_folder=test_folder,
