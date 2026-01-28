@@ -1,0 +1,19 @@
+# conda_dependencies.yml
+name: freshness_env
+channels:
+  - pytorch
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pytorch=2.0.1
+  - torchvision=0.15.2
+  - cudatoolkit=11.8
+  - pip
+  - pip:
+    - azureml-mlflow
+    - azureml-sdk
+    - pillow>=8.0.0
+    - tqdm>=4.50.0
+    - opencv-python-headless
+    - scikit-learn>=0.24.0
+    - onnx>=1.10.0

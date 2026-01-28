@@ -1,0 +1,351 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Fruit/Vegetable Freshness Classifier</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                background: #f5f5f5;
+                padding: 20px;
+            }
+            
+            .container {
+                max-width: 900px;
+                margin: 0 auto;
+            }
+            
+            h1 {
+                text-align: center;
+                color: #333;
+                margin-bottom: 10px;
+                font-size: 2em;
+            }
+            
+            .subtitle {
+                text-align: center;
+                color: #666;
+                margin-bottom: 30px;
+            }
+            
+            .card {
+                background: white;
+                border-radius: 8px;
+                padding: 30px;
+                margin-bottom: 20px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+            
+            .upload-area {
+                border: 2px dashed #667eea;
+                border-radius: 8px;
+                padding: 40px;
+                text-align: center;
+                cursor: pointer;
+                transition: all 0.3s;
+                background: #f9f9f9;
+            }
+            
+            .upload-area:hover {
+                background: #667eea;
+                color: white;
+                border-color: #667eea;
+            }
+            
+            .upload-area.dragover {
+                background: #667eea;
+                color: white;
+                border-color: #667eea;
+            }
+            
+            #imageInput {
+                display: none;
+            }
+            
+            #preview {
+                display: none;
+                max-width: 100%;
+                max-height: 400px;
+                border-radius: 8px;
+                margin: 20px 0;
+            }
+            
+            button {
+                background: #667eea;
+                color: white;
+                border: none;
+                padding: 12px 30px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 1em;
+                font-weight: 600;
+                transition: all 0.3s;
+            }
+            
+            button:hover:not(:disabled) {
+                background: #5568d3;
+            }
+            
+            button:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+            
+            .button-group {
+                display: flex;
+                gap: 10px;
+                margin-top: 20px;
+            }
+            
+            #predict-btn {
+                flex: 1;
+            }
+            
+            #remove-btn {
+                background: #ff4757;
+                display: none;
+            }
+            
+            #remove-btn:hover {
+                background: #ff3838;
+            }
+            
+            .results {
+                display: none;
+                margin-top: 30px;
+            }
+            
+            .result-item {
+                background: #f9f9f9;
+                padding: 20px;
+                border-left: 4px solid #667eea;
+                margin-bottom: 15px;
+                border-radius: 6px;
+            }
+            
+            .result-label {
+                font-size: 0.85em;
+                color: #666;
+                text-transform: uppercase;
+                font-weight: 600;
+                margin-bottom: 5px;
+            }
+            
+            .result-value {
+                font-size: 1.8em;
+                color: #333;
+                font-weight: 700;
+            }
+            
+            .result-confidence {
+                font-size: 0.95em;
+                color: #667eea;
+                margin-top: 5px;
+            }
+            
+            .spinner {
+                display: none;
+                text-align: center;
+                padding: 20px;
+            }
+            
+            .spinner-circle {
+                border: 4px solid #f3f3f3;
+                border-top: 4px solid #667eea;
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                animation: spin 1s linear infinite;
+                margin: 0 auto 15px;
+            }
+            
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            
+            .message {
+                padding: 15px;
+                border-radius: 6px;
+                margin-top: 15px;
+                display: none;
+            }
+            
+            .success {
+                background: #d4edda;
+                color: #155724;
+                border: 1px solid #c3e6cb;
+            }
+            
+            .error {
+                background: #f8d7da;
+                color: #721c24;
+                border: 1px solid #f5c6cb;
+            }
+            
+            .center {
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🍎 Obst-Gemüse-Frischeerkennung</h1>
+            <p class="subtitle">Upload an image to detect freshness / Bild hochladen, um die Frische zu erkennen </p>
+            
+            <div class="card">
+                <form id="form">
+                    <div class="upload-area" id="upload-area">
+                        <p style="font-size: 1.1em; margin-bottom: 10px;">📷  Click to upload or drag image here / Zum Hochladen hier klicken oder Bild hierher ziehen </p>
+                        <p style="font-size: 0.9em; color: #999;">JPG or PNG, max 10MB</p>
+                    </div>
+                    <input type="file" id="imageInput" accept="image/jpeg,image/png" required>
+                    
+                    <img id="preview">
+                    
+                    <div class="button-group">
+                        <button type="submit" id="predict-btn">🔍 Predict / Prognose</button>
+                        <button type="button" id="remove-btn">Remove</button>
+                    </div>
+                </form>
+                
+                <div id="spinner" class="spinner">
+                    <div class="spinner-circle"></div>
+                    <p>Analyzing image...</p>
+                </div>
+                
+                <div id="message" class="message"></div>
+            </div>
+            
+            <div class="card results" id="results">
+                <h2>🎯 Results</h2>
+                <div id="results-content"></div>
+            </div>
+        </div>
+        
+        <script>
+            const uploadArea = document.getElementById('upload-area');
+            const imageInput = document.getElementById('imageInput');
+            const preview = document.getElementById('preview');
+            const removeBtn = document.getElementById('remove-btn');
+            const form = document.getElementById('form');
+            const spinner = document.getElementById('spinner');
+            const message = document.getElementById('message');
+            const results = document.getElementById('results');
+            const resultsContent = document.getElementById('results-content');
+            
+            // File selection
+            uploadArea.addEventListener('click', () => imageInput.click());
+            
+            imageInput.addEventListener('change', (e) => {
+                if (e.target.files.length) {
+                    showPreview(e.target.files[0]);
+                }
+            });
+            
+            // Drag & Drop
+            ['dragenter', 'dragover'].forEach(event => {
+                uploadArea.addEventListener(event, () => uploadArea.classList.add('dragover'));
+            });
+            
+            ['dragleave', 'drop'].forEach(event => {
+                uploadArea.addEventListener(event, () => uploadArea.classList.remove('dragover'));
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                imageInput.files = e.dataTransfer.files;
+                if (imageInput.files.length) {
+                    showPreview(imageInput.files[0]);
+                }
+            });
+            
+            function showPreview(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    removeBtn.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            removeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                imageInput.value = '';
+                preview.style.display = 'none';
+                removeBtn.style.display = 'none';
+                results.style.display = 'none';
+            });
+            
+            // Form submission
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                if (!imageInput.files.length) {
+                    showMessage('❌ Please select an image', 'error');
+                    return;
+                }
+                
+                const formData = new FormData();
+                formData.append('file', imageInput.files[0]);
+                
+                spinner.style.display = 'block';
+                message.style.display = 'none';
+                results.style.display = 'none';
+                
+                try {
+                    const response = await fetch('/predict', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.detail || 'Prediction failed');
+                    }
+                    
+                    const result = await response.json();
+                    displayResults(result);
+                    showMessage('✓ Prediction successful!', 'success');
+                    
+                } catch (error) {
+                    showMessage('❌ ' + error.message, 'error');
+                } finally {
+                    spinner.style.display = 'none';
+                }
+            });
+            
+            function displayResults(result) {
+                resultsContent.innerHTML = `
+                    <div class="result-item">
+                        <div class="result-label">Item</div>
+                        <div class="result-value">${result.item}</div>
+                        <div class="result-confidence">${(result.item_confidence * 100).toFixed(1)}% confidence</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Freshness</div>
+                        <div class="result-value">${result.freshness}</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Mold Level</div>
+                        <div class="result-value">${result.mold}</div>
+                    </div>
+                `;
+                results.style.display = 'block';
+            }
+            
+            function showMessage(text, type) {
+                message.textContent = text;
+                message.className = 'message ' + type;
+                message.style.display = 'block';
+            }
+        </script>
+    </body>
+    </html>

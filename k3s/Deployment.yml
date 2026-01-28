@@ -1,0 +1,80 @@
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: freshness-classifier
+  namespace: freshness
+  labels:
+    app: freshness-classifier
+    version: v1
+spec:
+  replicas: 2  # High availability
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: freshness-classifier
+  template:
+    metadata:
+      labels:
+        app: freshness-classifier
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: inference
+        image: freshness-classifier:latest  # Replace with your registry
+        imagePullPolicy: Always
+
+        ports:
+        - name: http
+          containerPort: 8000
+          protocol: TCP
+
+        # Environment variables from ConfigMap and Secret
+        envFrom:
+        - secretRef:
+            name: app-config
+
+        # Resource requests and limits (CPU-optimized for ONNX)
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "2"
+
+        # Liveness probe (restart pod if unhealthy)
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 60  # Wait for model to load from Azure
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+
+        # Readiness probe (wait before receiving traffic)
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+
+        # Security context
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+
+      terminationGracePeriodSeconds: 30
