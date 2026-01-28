@@ -22,7 +22,9 @@ class PredictionResponse(BaseModel):
     item: str
     item_confidence: float
     freshness: str
+    freshness_confidence: float
     mold: str
+    mold_confidence: float
 
 # ============================================
 # FastAPI Setup
