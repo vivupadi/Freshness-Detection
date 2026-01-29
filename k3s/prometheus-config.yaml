@@ -1,0 +1,51 @@
+# Prometheus Configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: freshness
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 5m  
+      evaluation_interval: 5m
+
+    scrape_configs:
+      # Scrape Prometheus itself
+      - job_name: 'prometheus'
+        static_configs:
+          - targets: ['localhost:9090']
+
+      # Scrape Fruit Classifier pods
+      - job_name: 'fruit-classifier'
+        kubernetes_sd_configs:
+          - role: pod
+            namespaces:
+              names:
+                - freshness
+        relabel_configs:
+          # Only scrape pods with prometheus.io/scrape annotation
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+            action: keep
+            regex: true
+
+          # Use the port from prometheus.io/port annotation
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_port]
+            action: replace
+            target_label: __address__
+            regex: ([^:]+)(?::\d+)?
+            replacement: $1:8000
+
+          # Use the path from prometheus.io/path annotation
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+            action: replace
+            target_label: __metrics_path__
+            regex: (.+)
+
+          # Add pod labels as Prometheus labels
+          - source_labels: [__meta_kubernetes_pod_name]
+            target_label: pod
+          - source_labels: [__meta_kubernetes_namespace]
+            target_label: namespace
+          - source_labels: [__meta_kubernetes_pod_label_app]
+            target_label: app

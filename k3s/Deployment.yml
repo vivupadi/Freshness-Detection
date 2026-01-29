@@ -70,11 +70,25 @@ spec:
           timeoutSeconds: 3
           failureThreshold: 3
 
+        # Volume mounts
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        - name: cache
+          mountPath: /app/test_data_temp
+
         # Security context
         securityContext:
           runAsNonRoot: true
           runAsUser: 1000
           allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: false
+          readOnlyRootFilesystem: false  # Can be set to true with volumes mounted
+
+      # Volumes
+      volumes:
+      - name: tmp
+        emptyDir: {}  # Temporary storage for model downloads
+      - name: cache
+        emptyDir: {}  # Temporary storage for test images
 
       terminationGracePeriodSeconds: 30
