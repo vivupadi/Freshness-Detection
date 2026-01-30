@@ -397,7 +397,7 @@ class FruitClassifier:
             print(f"❌ Download failed: {str(e)}")
             return []
 
-    def start_drift_monitoring(self, test_container, test_folder='test', interval_hours=24):
+    def start_drift_monitoring(self, test_container, test_folder='test', interval_hours=6):
         """Start background drift monitoring every N hours"""
         def run_periodic_check():
             while True:
