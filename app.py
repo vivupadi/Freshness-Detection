@@ -61,7 +61,7 @@ async def startup_event():
         classifier.start_drift_monitoring(
             test_container=test_container,
             test_folder=test_folder,
-            interval_hours=24
+            interval_hours=6
         )
         
         print("✓ App started with 24h drift monitoring")
