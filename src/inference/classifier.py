@@ -285,7 +285,7 @@ class FruitClassifier:
         print("="*60)
 
         try:
-            # Download test images from blob
+            # Download test images from blob (returns list of (local_path, blob_name) tuples)
             test_images = self._download_test_data(test_container, test_folder)
             if not test_images:
                 print("⚠️ No test data available")
@@ -297,12 +297,31 @@ class FruitClassifier:
 
             print(f"\n🔍 Evaluating on {len(test_images)} samples...")
 
-            for image_path in test_images:
+            for image_path, blob_name in test_images:
                 try:
+                    # Parse ground truth from blob path: test/freshapples/img.jpg
+                    folder_name = Path(blob_name).parent.name.lower()
+
+                    # Extract fruit type and freshness from folder name
+                    if folder_name.startswith('fresh'):
+                        true_freshness = 'Fresh'
+                        true_fruit = folder_name[5:]  # Remove 'fresh' prefix
+                    elif folder_name.startswith('rotten'):
+                        true_freshness = 'Rotten'
+                        true_fruit = folder_name[6:]  # Remove 'rotten' prefix
+                    else:
+                        continue  # Skip unknown folders
+
                     result = self.predict_from_path(image_path)
                     total += 1
-                    # Assume correct (no ground truth)
-                    correct += 1
+
+                    # Check if prediction matches ground truth
+                    pred_fruit = result['item'].lower()
+                    pred_freshness = result['freshness']
+
+                    if pred_fruit == true_fruit and pred_freshness == true_freshness:
+                        correct += 1
+
                 except Exception as e:
                     print(f"⚠️ Error: {str(e)}")
                     continue
@@ -344,7 +363,11 @@ class FruitClassifier:
             return None
 
     def _download_test_data(self, container_name, test_folder='test', local_dir='./test_data_temp'):
-        """Download test data from Azure blob"""
+        """Download test data from Azure blob
+
+        Returns:
+            List of tuples: (local_path, blob_name) for ground truth extraction
+        """
         try:
             container_client = ContainerClient.from_connection_string(
                 self.connection_string,
@@ -358,12 +381,15 @@ class FruitClassifier:
             for blob in blobs:
                 if blob.name.lower().endswith(('.jpg', '.jpeg', '.png')):
                     blob_client = container_client.get_blob_client(blob.name)
-                    local_path = os.path.join(local_dir, Path(blob.name).name)
+                    # Use unique filename to avoid collisions
+                    safe_name = blob.name.replace('/', '_')
+                    local_path = os.path.join(local_dir, safe_name)
 
                     with open(local_path, 'wb') as f:
                         f.write(blob_client.download_blob().readall())
 
-                    image_paths.append(local_path)
+                    # Return both local path and original blob name for ground truth
+                    image_paths.append((local_path, blob.name))
 
             return image_paths
 
