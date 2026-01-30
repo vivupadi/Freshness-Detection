@@ -12,7 +12,7 @@ import os
 import sys
 from prometheus_client import generate_latest
 
-sys.path.insert(0, './src')
+
 from src.inference.classifier import FruitClassifier
 
 # ============================================

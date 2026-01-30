@@ -29,12 +29,12 @@ data:
             action: keep
             regex: true
 
-          # Use the port from prometheus.io/port annotation
-          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_port]
+          # Replace port with prometheus.io/port annotation
+          - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
             action: replace
             target_label: __address__
-            regex: ([^:]+)(?::\d+)?
-            replacement: $1:8000
+            regex: ([^:]+)(?::\d+)?;(\d+)
+            replacement: $1:$2
 
           # Use the path from prometheus.io/path annotation
           - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
