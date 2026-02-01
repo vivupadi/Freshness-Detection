@@ -43,35 +43,39 @@ Following Tech stack was Utilized:
 - Custom Drift Detection Python script
 
 
-### Project Structure
-
+## Project Structure
+```
 solutions/
 ├── src/
-│   └── training/
-│       ├── model.py                  # Model architecture
-│       ├── train.py                  # Training script
-│       ├── test.py                   # Test model inference locally
-│       ├── dataset.py                # Data preprocessing, train-test split
-│       └── conda_dependencies.yml    # Additional dependencies for cloud training
+│   ├── training/
+│   │   ├── model.py                    # Model architecture
+│   │   ├── train.py                    # Training script
+│   │   ├── test.py                     # Test model inference locally
+│   │   ├── dataset.py                  # Data preprocessing, train-test split
+│   │   └── conda_dependencies.yml      # Additional dependencies for cloud training
 │   └── inference/
-│       ├── classifier.py             # ONNX inference methods + monitoring metrics + custom drift method
-│       └── inference.py              # ONNX Inference script
+│       ├── classifier.py               # ONNX inference + monitoring + drift detection
+│       └── inference.py                # ONNX inference CLI script
+│
 ├── frontend/
-│       └── index.html                # Web UI
-├── k3s/                                  # Lightweight Kubernetes yaml for container orchestration
-│       ├── namespace.yml                 
-│       ├── Deployment.yml                
-│       ├── svc.yml                       
-│       ├── grafana-deployment.yaml       
-│       ├── grafana-svc.yaml              
-│       ├── prometheus-config.yaml        
-│       ├── prometheus-deployment.yaml    
-│       └── prometheus-svc.yaml           
-├── app.py                             # FastAPI server
-├── train-job-pipeline.py              # Training pipeline to be run on Azure ML Studio
-├── Dockerfile                         # Dockerfile to build image
-├── .env                               # Environment variables
-├── .dockerignore                      # files to be ignored during docker build
-├── .gitignore                         # files to be ignored during git upload
-├── requirements.txt                   # Dependencies
-└── README.md
+│   └── index.html                      # Web UI for image upload
+│
+├── k3s/                                # Kubernetes manifests
+│   ├── namespace.yml
+│   ├── Deployment.yml
+│   ├── svc.yml
+│   ├── grafana-deployment.yaml
+│   ├── grafana-svc.yaml
+│   ├── prometheus-config.yaml
+│   ├── prometheus-deployment.yaml
+│   └── prometheus-svc.yaml
+│
+├── app.py                              # FastAPI REST API server
+├── train-job-pipeline.py               # Azure ML training job submission
+├── Dockerfile                          # Container definition
+├── .env                                # Environment variables (not in repo)
+├── .dockerignore                       # Docker build exclusions
+├── .gitignore                          # Git exclusions
+├── requirements.txt                    # Python dependencies
+└── README.md                           # Project documentation
+```
