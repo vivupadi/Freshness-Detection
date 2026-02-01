@@ -1,7 +1,6 @@
 """
 For single images
 Uses ONNX Runtime for optimized CPU inference
-Reads configuration from .env file (like app.py)
 """
 
 import os

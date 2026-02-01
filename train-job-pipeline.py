@@ -28,7 +28,7 @@ job = command(
     code="./src/training",
     command="python train.py --data_dir ${{inputs.dataset}} --batch_size 32 --stage1_epochs 6 --stage2_epochs 6 --output_dir ${{outputs.model_output}}",
     
-    # Input data (your registered dataset)
+    # Input data 
     inputs={
         "dataset": Input(
             type="uri_folder",

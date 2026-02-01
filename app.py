@@ -55,7 +55,7 @@ async def startup_event():
         
         classifier = FruitClassifier(conn_string, container, blob)
 
-        # ✅ START 24-hour drift monitoring
+        # ✅ START 6-hour drift monitoring
         test_container = os.getenv("TEST_CONTAINER")
         test_folder = os.getenv("TEST_FOLDER")
         classifier.start_drift_monitoring(
@@ -64,7 +64,7 @@ async def startup_event():
             interval_hours=6
         )
         
-        print("✓ App started with 24h drift monitoring")
+        print("✓ App started with 6h drift monitoring")
         #print("✓ App started")
     except Exception as e:
         print(f"❌ Startup failed: {str(e)}")

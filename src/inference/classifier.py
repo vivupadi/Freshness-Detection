@@ -149,17 +149,13 @@ class FruitClassifier:
                 level = 'OK / Geht'
         else:  # Predicted rotten
             # Use confidence_score (quality regression output)
-            # Lower score = worse condition
-            # Severity progression: Slight mold → Mold → Rotten (worst)
-
             if confidence_score < 0.25:
-                # Very low score = worst condition (completely spoiled)
                 level = 'Rotten / Verdorben'
             elif confidence_score < 0.4:
-                # Low score = heavily moldy
+                # Low score 
                 level = 'Mold / Schimmel'
             else:
-                # Medium score = just starting to deteriorate
+                # Medium score 
                 level = 'Slight mold / Leichter Schimmel'
 
         return level
