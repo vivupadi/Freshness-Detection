@@ -1,5 +1,5 @@
 """
-FastAPI Fruit Freshness Classification Server - MVP
+FastAPI Fruit Freshness Classification Server 
 Serves predictions with basic Prometheus monitoring
 Uses ONNX Runtime for optimized CPU inference
 """
@@ -115,7 +115,7 @@ async def info():
         "model": "ResNet50 Multi-task",
         "classes": ['apples', 'banana', 'bittergroud', 'capsicum', 'cucumber', 
                    'okra', 'oranges', 'potato', 'tomato'],
-        "tasks": ["Fruit Classification", "Freshness Detection"]
+        "tasks": ["Fruit Classification", "Freshness Detection", "Mold Level Detection"]
     }
 
 if __name__ == "__main__":
