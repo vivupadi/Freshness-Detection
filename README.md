@@ -2,6 +2,8 @@
 
 A Fruit/vegetable Freshness Classifier to identify the fruit/vegetable from the mentioned list of items, predict the freshness, and identify the mold level by uploading the image.
 
+[til!](https://github.com/vivupadi/Freshness-Detection/blob/main/Demo%20Image/WhatsApp%20Image%202026-02-01%20at%2012.02.59%20AM%20(5).jpeg)
+
 Live Demo: [Link to Live Demo](http://46.225.56.25:30800/)
 
 Live DashBoard: [Dashboard](http://46.225.56.25:30300/d/d04fd85e-9659-4eb8-b5fe-558c854ac2c5/freshness-classifier?orgId=1&from=now-2d&to=now)
