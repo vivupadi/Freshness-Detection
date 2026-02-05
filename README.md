@@ -1,6 +1,7 @@
 # Freshness Classifier
 
 A Fruit/vegetable Freshness Classifier to identify the fruit/vegetable from the mentioned list of items, predict the freshness, and identify the mold level by uploading the image.
+**Current classes that can be predicted: ['apples', 'banana', 'bittergroud', 'capsicum', 'cucumber', 'okra', 'oranges', 'potato', 'tomato']
 
 ![til](https://github.com/vivupadi/Freshness-Detection/blob/main/Demo%20Image/WhatsApp%20Image%202026-02-01%20at%2012.02.59%20AM%20(5).jpeg)
 
