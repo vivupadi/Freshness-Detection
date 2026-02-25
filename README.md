@@ -82,3 +82,10 @@ solutions/
 ├── requirements.txt                    # Python dependencies
 └── README.md                           # Project documentation
 ```
+
+
+<div align="center">
+⭐ Star this repo if you find it helpful!
+  
+Made with ❤️ by Vivek Padayattil
+</div>
