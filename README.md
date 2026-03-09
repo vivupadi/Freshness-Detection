@@ -83,6 +83,9 @@ solutions/
 └── README.md                           # Project documentation
 ```
 
+## Future Scopes
+
+In case of new class/image, using ollama-based multi-modal model like 'llava' to determine the class and moldness level.
 
 <div align="center">
 ⭐ Star this repo if you find it helpful!
